@@ -7,6 +7,7 @@
 
 #include "Phish.h"
 
+// For testing; to see where program executed from
 std::string getexepath()
 {
     char result[ MAX_PATH ];

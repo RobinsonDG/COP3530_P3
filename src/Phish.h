@@ -2,22 +2,26 @@
 // Created by Donald Robinson on 4/17/2024.
 //
 
-#ifndef COP3530_P3_PHISH_H
-#define COP3530_P3_PHISH_H
-
 #include <iostream>
 #include <string>
 
+#include "RBTree.h"
+// #include "data_structure2.h"
+
+#ifndef COP3530_P3_PHISH_H
+#define COP3530_P3_PHISH_H
+
 class Phish {
 private:
+    // For testing. Each data structure will have its own node.
     struct Site {
         float score = 0.f;
         std::string domain;
         std::string ip;
     };
 
-    // data_structure1<Phish::Site>* ds1 = nullptr;
-    // data_structure2<Phish::Site>* ds2 = nullptr;
+    RBTree* rb_tree = nullptr;
+    // data_structure2* ds2 = nullptr;
 
     void read_phish_csv();
 
