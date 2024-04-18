@@ -12,23 +12,34 @@
 
 class RBTree {
 private:
-    // Node equivalent
-    struct Site {
+    struct Node {
         float score = 0.f;
         std::string domain;
         std::string ip;
 
         bool color = BLACK;
 
-        Site* left = nullptr;
-        Site* right = nullptr;
+        Node* left = nullptr;
+        Node* right = nullptr;
+
+        Node(float& score, std::string& domain, std::string& ip)
+        {
+            this->score = score;
+            this->domain = domain;
+            this->ip = ip;
+        }
     };
-    Site* root = nullptr;
+    Node* root = nullptr;
+
+    // Helper Methods:
+    bool compare(const RBTree::Node* const comparee_1, const RBTree::Node* const comparee_2);
+    RBTree::Node* helperInsert(Node* helperRoot, float& score, std::string& domain, std::string& ip);
 
 public:
     RBTree();
     ~RBTree();
 
+    void insert(float& score, std::string& domain, std::string& ip);
 };
 
 
