@@ -17,10 +17,11 @@ private:
         std::string domain;
         std::string ip;
 
-        bool color = BLACK;
+        bool color = RED;
 
         Node* left = nullptr;
         Node* right = nullptr;
+        Node* parent = nullptr;
 
         Node(float& score, std::string& domain, std::string& ip)
         {
@@ -30,10 +31,15 @@ private:
         }
     };
     Node* root = nullptr;
+    unsigned long size = 0;
 
     // Helper Methods:
-    bool compare(const RBTree::Node* const comparee_1, const RBTree::Node* const comparee_2);
-    RBTree::Node* helperInsert(Node* helperRoot, float& score, std::string& domain, std::string& ip);
+    int compare(const RBTree::Node* const comparee_1, const RBTree::Node* const comparee_2);
+    RBTree::Node* getGrandParent(Node* helperRoot);
+    RBTree::Node* getUncle(Node* helperRoot);
+
+    RBTree::Node* balance(Node* helperRoot);
+    RBTree::Node* helperInsert(Node* helperRoot, Node* new_node, float& score, std::string& domain, std::string& ip);
 
 public:
     RBTree();
