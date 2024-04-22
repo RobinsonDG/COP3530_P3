@@ -25,7 +25,7 @@ Phish::~Phish() {
 void Phish::read_phish_csv() {
     delete rb_tree;
     rb_tree = new RBTree();
-    // delete bin_heap;
+    delete bin_heap;
     bin_heap = new Heap();
 
     std::ifstream file;
@@ -74,7 +74,7 @@ void Phish::read_phish_csv() {
     auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
 
     std::cout << "\nThe Red-Black Tree took " << microseconds.count() << "us to insert ";
-    std::cout << sites->size() << " potential scam sites.\n";
+    std::cout << rb_tree->getSize() << " potential scam sites.\n";
     // -----*******-----
 
     // -----Binary Heap-----
@@ -85,7 +85,7 @@ void Phish::read_phish_csv() {
     finish = std::chrono::high_resolution_clock::now();
     microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
     std::cout << "\nThe Max-Heap took " << microseconds.count() << "us to insert ";
-    std::cout << sites->size() << " potential scam sites.\n";
+    std::cout << bin_heap->getSize() << " potential scam sites.\n";
     // -----***********-----
 
     for (Site* i: *sites)
