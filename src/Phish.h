@@ -21,14 +21,14 @@ private:
     };
 
     RBTree* rb_tree = nullptr;
-    // data_structure2* ds2 = nullptr;
-
-    void read_phish_csv();
+    // data_structure2* bin_heap = nullptr;
 
 public:
     Phish();
     ~Phish();
 
+    void read_phish_csv();
+    void phishing_threshold(float& score);
 };
 
 
