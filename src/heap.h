@@ -88,6 +88,7 @@ public:
 
         return sitesAboveThreshold;
     }
+    unsigned long getSize() {return size;}
 };
 
 
