@@ -2,6 +2,8 @@
 // Created by Donald Robinson on 4/18/2024.
 //
 
+#include <queue>
+#include <iostream>
 #include "RBTree.h"
 
 RBTree::RBTree()
@@ -9,10 +11,24 @@ RBTree::RBTree()
 
 }
 
-// Deletes nodes via post-order traversal
+// Deletes nodes via Level Order traversal
 RBTree::~RBTree()
 {
+    std::queue<Node*> q;
+    q.emplace(root);
+    while(!q.empty())
+    {
+        Node* temp = q.front();
+        q.pop();
 
+        if (temp->left != nullptr)
+            q.emplace(temp->left);
+        if (temp->right != nullptr)
+            q.emplace(temp->right);
+
+        delete temp;
+    }
+    root = nullptr;
 }
 
 // Compares nodes on basis of phishing score (first) and domain name (second).
@@ -57,68 +73,223 @@ RBTree::Node* RBTree::getGrandParent(Node* helperRoot)
 RBTree::Node* RBTree::getUncle(Node* helperRoot)
 {
     Node* parent = helperRoot->parent;
-    if (parent->right == helperRoot)
-        return parent->left;
-    else
-        return parent->right;
-}
-
-RBTree::Node* RBTree::balance(RBTree::Node* helperRoot)
-{
-    // If leaf, return itself
-//    if (helperRoot->left == nullptr && helperRoot->right == nullptr)
-//        return helperRoot;
-
-    Node* parent = helperRoot->parent;
-    Node* uncle = getUncle(helperRoot);
     Node* grandparent = getGrandParent(helperRoot);
-
-    if (parent->color == BLACK)
-        return helperRoot;
-    // if uncle black, if uncle red, rotate
-
-    return nullptr;
+    if (grandparent->right == parent)
+        return grandparent->left;
+    else
+        return grandparent->right;
 }
 
-RBTree::Node* RBTree::helperInsert(RBTree::Node *helperRoot, Node* new_node, float &score, std::string &domain, std::string &ip)
+void RBTree::balance(RBTree::Node* helperRoot)
 {
-    // If tree empty, make root and change color to black
-    if (size == 0)
+    Node* parent = helperRoot->parent;
+    Node* grandparent = getGrandParent(helperRoot);
+    Node* uncle = nullptr;
+
+    while(parent->color == RED)
     {
-        new_node->color = BLACK;
-        ++size;
-        return new_node;
+        parent = helperRoot->parent;
+        grandparent = getGrandParent(helperRoot);
+        uncle = getUncle(helperRoot);
+
+        if (uncle != nullptr && uncle->color == RED)
+        {
+            uncle->color = parent->color = BLACK;
+            grandparent->color = RED;
+            helperRoot = grandparent;
+
+            if (grandparent == root)
+                break;
+
+            // Update status (everytime helperRoot is adjusted)
+            parent = helperRoot->parent;
+
+            continue;
+        }
+
+        // Right-
+        if (parent == grandparent->right)
+        {
+            // -Left Case
+            if (helperRoot == parent->left)
+            {
+                helperRoot = parent;
+                rightRotation(helperRoot);
+                // Update status
+                parent = helperRoot->parent;
+                grandparent = getGrandParent(helperRoot);
+            }
+            // -Right Case
+            parent->color = BLACK;
+            grandparent->color = RED;
+            leftRotation(grandparent);
+        }
+        // Left-
+        else
+        {
+            // -Right Case
+            if (helperRoot == parent->right)
+            {
+                helperRoot = parent;
+                leftRotation(helperRoot);
+                // Update status
+                parent = helperRoot->parent;
+                grandparent = getGrandParent(helperRoot);
+            }
+            // -Left Case
+            parent->color = BLACK;
+            grandparent->color = RED;
+            rightRotation(grandparent);
+        }
+
+        if (helperRoot == root)
+            break;
     }
-    // If not empty, add new node
-    else if (helperRoot == nullptr)
-    {
-        ++size;
-        return new_node;
-    }
 
-    int compare_val = compare(new_node, helperRoot);
-    switch (compare_val)
-    {
-        // If new_node is equal to root, do not add
-        case -1:
-            return nullptr;
-        // If less, insert on left
-        case 0:
-            helperRoot->left = helperInsert(helperRoot->left, new_node, score, domain, ip);
-            helperRoot->left->parent = helperRoot;
-        // If greater, insert on right side
-        case 1:
-            helperRoot->right = helperInsert(helperRoot->right, new_node, score, domain, ip);
-            helperRoot->right->parent = helperRoot;
-    }
+    root->color = BLACK;
+}
 
+void RBTree::leftRotation(Node* curr_node)
+{
+    // Current parent of curr_node
+    Node* curr_parent = curr_node->parent;
 
+    // new_curr_node is curr_node's right child
+    Node* new_curr_node = curr_node->right;
 
-    return nullptr;
+    // Transfer child
+    curr_node->right = new_curr_node->left;
+
+    // If transferred child is not null, replace parent
+    if (curr_node->right != nullptr)
+        curr_node->right->parent = curr_node;
+
+    // Parent of new_curr is parent of curr_node
+    new_curr_node->parent = curr_parent;
+
+    if (curr_parent == nullptr)
+        root = new_curr_node;
+    // Transfer child ptr from parent
+    else if (curr_node == curr_parent->right)
+        curr_parent->right = new_curr_node;
+    else
+        curr_parent->left = new_curr_node;
+
+    // Finalize rotation
+    new_curr_node->left = curr_node;
+    curr_node->parent = new_curr_node;
+}
+
+void RBTree::rightRotation(Node* curr_node)
+{
+    // Current parent of curr_node
+    Node* curr_parent = curr_node->parent;
+
+    // new_curr_node is curr_node's left child
+    Node* new_curr_node = curr_node->left;
+
+    // Transfer child
+    curr_node->left = new_curr_node->right;
+
+    // If transferred child is not null, replace parent
+    if (curr_node->left != nullptr)
+        curr_node->left->parent = curr_node;
+
+    // Parent of new_curr is parent of curr_node
+    new_curr_node->parent = curr_parent;
+
+    if (curr_parent == nullptr)
+        root = new_curr_node;
+    // Transfer child ptr from parent
+    else if (curr_node == curr_parent->left)
+        curr_parent->left = new_curr_node;
+    else
+        curr_parent->right = new_curr_node;
+
+    // Finalize rotation
+    new_curr_node->right = curr_node;
+    curr_node->parent = new_curr_node;
 }
 
 void RBTree::insert(float &score, std::string &domain, std::string &ip)
 {
     Node* new_node = new Node(score, domain, ip);
-    this->root = helperInsert(this->root, new_node, score, domain, ip);
+    Node* iter_1 = root;
+    Node* iter_2 = root;
+
+    if (root == nullptr)
+    {
+        root = new_node;
+        root->color = BLACK;
+        ++size;
+        return;
+    }
+
+    int compare_val = 0;
+    // Iterative approach to navigate tree, keeping iter_2 one level above iter_1
+    while (iter_1 != nullptr)
+    {
+        compare_val = compare(new_node, iter_1);
+        switch (compare_val)
+        {
+            // If new_node is equal to root, do not add
+            case -1:
+                delete new_node;
+                return;
+            // If less, got to left
+            case 0:
+                iter_2 = iter_1;
+                iter_1 = iter_1->left;
+                break;
+            // If greater, go to right
+            case 1:
+                iter_2 = iter_1;
+                iter_1 = iter_1->right;
+                break;
+        }
+    }
+
+    new_node->parent = iter_2;
+    ++size;
+    compare_val ? iter_2->right = new_node : iter_2->left = new_node;
+
+    // Balance the tree starting at the newly inserted node
+    balance(new_node);
+}
+
+// Prints level order traversal of tree (left to right)
+void RBTree::printLevelOrder()
+{
+    std::queue<Node*> q;
+    q.emplace(root);
+    while(!q.empty())
+    {
+        Node* temp = q.front();
+        q.pop();
+
+        if (temp->left != nullptr)
+            q.emplace(temp->left);
+        if (temp->right != nullptr)
+            q.emplace(temp->right);
+
+        temp->color ? std::cout << "RED | " : std::cout << "BLACK | ";
+        std::cout << temp->score << " | " << temp->domain;
+
+        if (temp->parent != nullptr)
+        {
+            if (temp == temp->parent->right)
+                std::cout << ", right ";
+            else
+                std::cout << ", left ";
+
+            std::cout << "son of " << temp->parent->domain << "\n";
+        }
+        else
+            std::cout << "\n";
+    }
+}
+
+unsigned long RBTree::getSize()
+{
+    return size;
 }
