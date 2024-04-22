@@ -26,7 +26,7 @@ void Phish::read_phish_csv() {
     delete rb_tree;
     rb_tree = new RBTree();
     // delete bin_heap;
-    // bin_heap = new ...;
+    bin_heap = new Heap();
 
     std::ifstream file;
     file.open("../phish_score.csv");
@@ -80,6 +80,15 @@ void Phish::read_phish_csv() {
     // -----Binary Heap-----
 
     // -----***********-----
+
+    start = std::chrono::high_resolution_clock::now();
+    for(Site* i: *sites){
+        bin_heap->insert(i->score, i->domain, i->ip);
+    }
+    finish = std::chrono::high_resolution_clock::now();
+    microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
+    std::cout << "\nThe Max-Heap took " << microseconds.count() << "us to insert ";
+    std::cout << sites->size() << " potential scam sites.\n";
 
 
     for (Site* i: *sites)
