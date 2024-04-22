@@ -110,7 +110,8 @@ void Phish::phishing_threshold(float& score)
 
     // -----Binary Heap-----
     start = std::chrono::high_resolution_clock::now();
-    auto bin_results = bin_heap->aboveThreshold(score);
+    Heap* copyHeap = new Heap(*bin_heap);
+    auto bin_results = copyHeap->aboveThreshold(score);
     finish = std::chrono::high_resolution_clock::now();
     microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
 
