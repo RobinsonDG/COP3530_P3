@@ -78,9 +78,6 @@ void Phish::read_phish_csv() {
     // -----*******-----
 
     // -----Binary Heap-----
-
-    // -----***********-----
-
     start = std::chrono::high_resolution_clock::now();
     for(Site* i: *sites){
         bin_heap->insert(i->score, i->domain, i->ip);
@@ -89,7 +86,7 @@ void Phish::read_phish_csv() {
     microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
     std::cout << "\nThe Max-Heap took " << microseconds.count() << "us to insert ";
     std::cout << sites->size() << " potential scam sites.\n";
-
+    // -----***********-----
 
     for (Site* i: *sites)
     {
@@ -109,17 +106,9 @@ void Phish::phishing_threshold(float& score)
     std::cout << "\nThe Red-Black Tree took " << microseconds.count() << "us to find ";
     std::cout << results.first << " site with a phishing score greater than or equal to " << score << ".\n";
 
-    std::string input;
-    std::cout << "Would you like to see the results? [y/n]? ";
-    std::cin >> input;
-    if (input == "y" || input == "Y")
-        std::cout << results.second;
-
     // -----*******-----
 
     // -----Binary Heap-----
-
-    // -----***********-----
     start = std::chrono::high_resolution_clock::now();
     auto bin_results = bin_heap->aboveThreshold(score);
     finish = std::chrono::high_resolution_clock::now();
@@ -127,4 +116,11 @@ void Phish::phishing_threshold(float& score)
 
     std::cout << "\nThe Max-Heap took " << microseconds.count() << "us to find ";
     std::cout << bin_results.size() << " site with a phishing score greater than or equal to " << score << ".\n";
+    // -----***********-----
+
+    std::string input;
+    std::cout << "Would you like to see the results? [y/n]? ";
+    std::cin >> input;
+    if (input == "y" || input == "Y")
+        std::cout << results.second;
 }

@@ -89,7 +89,7 @@ int main()
                     std::getline(std::cin, input_score_str);
 
                     // Just-in-case error handling
-                    try { input_score = std::stoi(input_score_str); }
+                    try { input_score = std::stof(input_score_str); }
                     catch(std::invalid_argument& e){
                         std::cout << "Please enter a valid float.\n";
                         continue;
