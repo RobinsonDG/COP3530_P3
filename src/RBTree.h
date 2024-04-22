@@ -38,14 +38,17 @@ private:
     RBTree::Node* getGrandParent(Node* helperRoot);
     RBTree::Node* getUncle(Node* helperRoot);
 
-    RBTree::Node* balance(Node* helperRoot);
-    RBTree::Node* helperInsert(Node* helperRoot, Node* new_node, float& score, std::string& domain, std::string& ip);
+    void balance(Node* helperRoot);
+    void leftRotation(Node* node);
+    void rightRotation(Node* node);
 
 public:
     RBTree();
     ~RBTree();
 
     void insert(float& score, std::string& domain, std::string& ip);
+    void printLevelOrder();
+    unsigned long getSize();
 };
 
 
