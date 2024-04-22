@@ -43,6 +43,21 @@ private:
             }
             return true;
         }
+        bool operator==(const Triplet& rhs){
+            if(this->score == rhs.score){
+                size_t min_len = std::min(this->domain.length(), rhs.domain.length());
+                for(auto i = 0; i < min_len; i++){
+                    if(!(this->domain[i] == rhs.domain[i])){
+                        return false;
+                    }
+                }
+
+                if(this->domain.length() == rhs.domain.length()){
+                    return true;
+                }
+            }
+            return false;
+        }
     };
 
     std::vector<Triplet> container;
@@ -59,12 +74,20 @@ public:
         std::vector<Triplet> sitesAboveThreshold;
 
         while(container[0].score >= threshold){
+            if(sitesAboveThreshold.size() == 0){
+                sitesAboveThreshold.push_back(popTop());
+                continue;
+            }
+            if(container[0] == sitesAboveThreshold[sitesAboveThreshold.size()-1]){
+                Triplet getRid = popTop();
+                continue;
+            }
             sitesAboveThreshold.push_back(popTop());
+
         }
 
         return sitesAboveThreshold;
     }
-    unsigned long getSize() {return size;}
 };
 
 
