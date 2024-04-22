@@ -21,7 +21,7 @@ private:
     };
 
     RBTree* rb_tree = nullptr;
-    // data_structure2* bin_heap = nullptr;
+    Heap* bin_heap = nullptr;
 
 public:
     Phish();
