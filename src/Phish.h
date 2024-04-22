@@ -6,7 +6,7 @@
 #include <string>
 
 #include "RBTree.h"
-// #include "data_structure2.h"
+#include "heap.h"
 
 #ifndef COP3530_P3_PHISH_H
 #define COP3530_P3_PHISH_H
