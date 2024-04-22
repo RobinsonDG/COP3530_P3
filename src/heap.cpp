@@ -11,7 +11,7 @@ void Heap::heapify(int node) {
         //not in the heap
         return;
     }
-    if(node == 1){
+    if(node == 0){
         //top node
         return;
     }
