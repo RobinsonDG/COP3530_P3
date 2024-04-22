@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+
 #ifndef UNTITLED1_HEAP_H
 #define UNTITLED1_HEAP_H
 
@@ -15,7 +17,7 @@ private:
         std::string domain;
         std::string ip;
         Triplet(float _score, const std::string _domain, const std::string _ip);
-        int operator>(const Triplet& rhs){
+        bool operator>(const Triplet& rhs){
             if(this->score > rhs.score){
                 return true;
             }else if(this->score < rhs.score){
@@ -33,7 +35,7 @@ private:
             }
 
             if(this->domain.length() == rhs.domain.length()){
-                return -1;
+                return false;
             }
 
             if(min_len == this->domain.length()){
@@ -56,14 +58,8 @@ public:
     std::vector<Triplet> aboveThreshold(float threshold){
         std::vector<Triplet> sitesAboveThreshold;
 
-        Triplet curr = popTop();
-
-        float currScore = curr.score;
-
-        while(currScore >= threshold){
-            sitesAboveThreshold.push_back(curr);
-            curr = popTop();
-            
+        while(container[0].score >= threshold){
+            sitesAboveThreshold.push_back(popTop());
         }
 
         return sitesAboveThreshold;
