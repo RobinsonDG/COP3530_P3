@@ -3,7 +3,9 @@
 //
 
 #include <queue>
+#include <stack>
 #include <iostream>
+#include <sstream>
 #include "RBTree.h"
 
 RBTree::RBTree()
@@ -211,6 +213,20 @@ void RBTree::rightRotation(Node* curr_node)
     curr_node->parent = new_curr_node;
 }
 
+// Traverses given node in an In-Order fashion, adding output to stringstream
+void RBTree::findMinScoreHelper(Node* helperRoot, std::stringstream& output)
+{
+    if (helperRoot == nullptr)
+        return;
+    else
+    {
+        findMinScoreHelper(helperRoot->left, output);
+        output << helperRoot->score << " " << helperRoot->domain << " " << helperRoot->ip << "\n";
+        findMinScoreHelper(helperRoot->right, output);
+    }
+
+}
+
 void RBTree::insert(float &score, std::string &domain, std::string &ip)
 {
     Node* new_node = new Node(score, domain, ip);
@@ -287,6 +303,96 @@ void RBTree::printLevelOrder()
         else
             std::cout << "\n";
     }
+}
+
+// Returns whether request valid. Prints in-order list of all sites above specified score.
+bool RBTree::findMinScore(float& score)
+{
+    if (score < 0 || score > 10)
+        return false;
+
+    Node* iter = root;
+    // Holds nodes to be traversed. Stack to preserve in-order (lowest score will be added last)
+    std::stack<Node*> s;
+
+    if (root == nullptr)
+        return false;
+
+    // If the root has the specified score, add to stack
+    if (iter->score == score)
+        s.push(iter);
+    // If score is larger than root, we traverse right
+    else if (iter->score < score) {
+        while (true)
+        {
+            // Make sure iter exists
+            if (iter == nullptr)
+                break;
+
+            // If we find a spot where the score >= threshold...
+            if (iter->score >= score)
+            {
+                // Push to stack
+                s.push(iter);
+                // Shift to left in order to find potential successors leading up to score
+                iter = iter->left;
+                continue;
+            }
+
+            if (iter->left == nullptr)
+            {
+                if (iter->score >= score)
+                    s.push(iter);
+                break;
+            }
+
+            iter = iter->right;
+        }
+    }
+    // Same as above, but going left
+    else
+    {
+        while (true)
+        {
+            if (iter == nullptr)
+                break;
+
+            if (iter->score >= score)
+            {
+                s.push(iter);
+                iter = iter->left;
+                continue;
+            }
+
+            if (iter->left == nullptr)
+            {
+                if (iter->score >= score)
+                    s.push(iter);
+                break;
+            }
+
+            iter = iter->right;
+        }
+    }
+
+    // No values above threshold
+    if (s.empty())
+        return false;
+
+    Node* temp = nullptr;
+    std::stringstream stream;
+    while(!s.empty())
+    {
+        temp = s.top();
+        s.pop();
+
+        // Add site info to stream
+        stream << temp->score << " " << temp->domain << " " << temp->ip << "\n";
+        // Due to greater than info, only search right side node
+        findMinScoreHelper(temp->right, stream);
+    }
+    std::cout << stream.str();
+    return true;
 }
 
 unsigned long RBTree::getSize()
