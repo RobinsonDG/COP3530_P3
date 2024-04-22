@@ -15,7 +15,7 @@ void Heap::heapify(int node) {
         //top node
         return;
     }
-    if((container[node] > container[parent]) == 1){
+    if((container[node] > container[parent])){
         std::swap(container[node], container[parent]);
 
         heapify(parent);
@@ -52,12 +52,14 @@ void Heap::heapifyDown(int node) {
     }
 
     int swap = node;
+    int left = 2*node + 1;
+    int right = 2*node+2;
 
-    if(node*2+1 < size && (container[node*2+1] > container[node]) == 1){
-        swap = node*2+1;
+    if(left < size && (container[left] > container[swap])){
+        swap = left;
     }
-    if((node*2)+2 < size && (container[node*2+2] > container[node]) == 1){
-        swap = node*2 + 2;
+    if(right < size && (container[right] > container[swap])){
+        swap = right;
     }
 
     if(swap != node){
