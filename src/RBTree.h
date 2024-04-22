@@ -42,7 +42,7 @@ private:
     void leftRotation(Node* node);
     void rightRotation(Node* node);
 
-    void findMinScoreHelper(Node* helperRoot, std::stringstream& output);
+    void findMinScoreHelper(Node* helperRoot, std::stringstream& output, unsigned long& count);
 
 public:
     RBTree();
@@ -50,7 +50,7 @@ public:
 
     void insert(float& score, std::string& domain, std::string& ip);
     void printLevelOrder();
-    bool findMinScore(float& score);
+    std::pair<unsigned long, std::string> findMinScore(float& score);
     unsigned long getSize();
 };
 

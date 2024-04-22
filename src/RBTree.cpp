@@ -214,15 +214,16 @@ void RBTree::rightRotation(Node* curr_node)
 }
 
 // Traverses given node in an In-Order fashion, adding output to stringstream
-void RBTree::findMinScoreHelper(Node* helperRoot, std::stringstream& output)
+void RBTree::findMinScoreHelper(Node* helperRoot, std::stringstream& output, unsigned long& count)
 {
     if (helperRoot == nullptr)
         return;
     else
     {
-        findMinScoreHelper(helperRoot->left, output);
+        findMinScoreHelper(helperRoot->left, output, count);
         output << helperRoot->score << " " << helperRoot->domain << " " << helperRoot->ip << "\n";
-        findMinScoreHelper(helperRoot->right, output);
+        ++count;
+        findMinScoreHelper(helperRoot->right, output, count);
     }
 
 }
@@ -306,17 +307,17 @@ void RBTree::printLevelOrder()
 }
 
 // Returns whether request valid. Prints in-order list of all sites above specified score.
-bool RBTree::findMinScore(float& score)
+std::pair<unsigned long, std::string> RBTree::findMinScore(float& score)
 {
     if (score < 0 || score > 10)
-        return false;
+        return std::make_pair(0, "");
 
     Node* iter = root;
     // Holds nodes to be traversed. Stack to preserve in-order (lowest score will be added last)
     std::stack<Node*> s;
 
     if (root == nullptr)
-        return false;
+        return std::make_pair(0, "");;
 
     // If the root has the specified score, add to stack
     if (iter->score == score)
@@ -377,8 +378,9 @@ bool RBTree::findMinScore(float& score)
 
     // No values above threshold
     if (s.empty())
-        return false;
+        return std::make_pair(0, "");
 
+    unsigned long count = 0;
     Node* temp = nullptr;
     std::stringstream stream;
     while(!s.empty())
@@ -388,11 +390,11 @@ bool RBTree::findMinScore(float& score)
 
         // Add site info to stream
         stream << temp->score << " " << temp->domain << " " << temp->ip << "\n";
+        ++count;
         // Due to greater than info, only search right side node
-        findMinScoreHelper(temp->right, stream);
+        findMinScoreHelper(temp->right, stream, count);
     }
-    std::cout << stream.str();
-    return true;
+    return std::make_pair(count, stream.str());
 }
 
 unsigned long RBTree::getSize()

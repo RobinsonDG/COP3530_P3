@@ -20,18 +20,22 @@ int main()
     std::string input_str;
     int input_int;
 
+    bool csv_read = false;
+
+    auto phish = new Phish();
+
     // 49 total. 47 without outer
     // Perhaps less than ideal formatting :)
+
+    std::cout << " " << std::string(49, '-') << " \n";
+    std::cout << "|" << std::string(13, ' ') << "Something Smells Phishy" << std::string(13, ' ') << "|\n";
+    std::cout << "|" << std::string(3, ' ') << "...and it's not just that grammatical error";
+    std::cout << std::string(3, ' ') << "|\n";
+    std::cout << "|" << std::string(12, ' ') << "asking for my password..." << std::string(12, ' ') << "|\n";
+    std::cout << " " << std::string(49, '-') << " \n";
+
+    std::cout << "Please ensure that the file \"phish_score.csv\" is located in this project directory, one directory outside of the src folder.\n";
     while (true) {
-        std::cout << " " << std::string(49, '-') << " \n";
-        std::cout << "|" << std::string(13, ' ') << "Something Smells Phishy" << std::string(13, ' ') << "|\n";
-        std::cout << "|" << std::string(3, ' ') << "...and it's not just that grammatical error";
-        std::cout << std::string(3, ' ') << "|\n";
-        std::cout << "|" << std::string(12, ' ') << "asking for my password..." << std::string(12, ' ') << "|\n";
-        std::cout << " " << std::string(49, '-') << " \n";
-
-        std::cout << "Please ensure that the file \"phish_score.csv\" is located in this project directory, one directory outside of the src folder.\n";
-
         std::cout << "\nPlease enter the number corresponding to the option you would like to choose (i.e. \"1\")\n";
         std::cout << "Enter \"0\" to quit...\n";
 
@@ -67,23 +71,50 @@ int main()
         switch (input_int)
         {
             case 1:
-
+                phish->read_phish_csv();
+                csv_read = true;
                 break;
             case 2:
+                if (!csv_read)
+                {
+                    std::cout << "Please read from csv first! (choose option 1).\n";
+                    break;
+                }
+
+                std::string input_score_str;
+                float input_score;
+                std::cout << "Please enter a minimum score to be filtered (float)... ";
+                while (true)
+                {
+                    std::getline(std::cin, input_score_str);
+
+                    // Just-in-case error handling
+                    try { input_score = std::stoi(input_score_str); }
+                    catch(std::invalid_argument& e){
+                        std::cout << "Please enter a valid float.\n";
+                        continue;
+                    }
+                    catch(std::out_of_range& e){
+                        std::cout << "Please enter a valid float.\n";
+                        continue;
+                    }
+                    if (input_score < 0.f || input_score > 10.f)
+                    {
+                        std::cout << "Please enter a float between 0.0 and 10.0.\n";
+                        continue;
+                    }
+
+                    break;
+                }
+
+                phish->phishing_threshold(input_score);
 
                 break;
         }
 
     }
 
-
-
-
-
-    // auto phish = new Phish();
-
-
-    // delete phish;
+    delete phish;
 
     return 0;
 }
