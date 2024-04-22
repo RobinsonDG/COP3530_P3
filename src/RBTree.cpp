@@ -221,7 +221,7 @@ void RBTree::findMinScoreHelper(Node* helperRoot, std::stringstream& output, uns
     else
     {
         findMinScoreHelper(helperRoot->left, output, count);
-        output << helperRoot->score << " " << helperRoot->domain << " " << helperRoot->ip << "\n";
+        output << helperRoot->score << ", " << helperRoot->domain << ", " << helperRoot->ip << "\n";
         ++count;
         findMinScoreHelper(helperRoot->right, output, count);
     }
@@ -389,7 +389,7 @@ std::pair<unsigned long, std::string> RBTree::findMinScore(float& score)
         s.pop();
 
         // Add site info to stream
-        stream << temp->score << " " << temp->domain << " " << temp->ip << "\n";
+        stream << temp->score << ", " << temp->domain << ", " << temp->ip << "\n";
         ++count;
         // Due to greater than info, only search right side node
         findMinScoreHelper(temp->right, stream, count);
