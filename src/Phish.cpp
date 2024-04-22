@@ -120,4 +120,11 @@ void Phish::phishing_threshold(float& score)
     // -----Binary Heap-----
 
     // -----***********-----
+    start = std::chrono::high_resolution_clock::now();
+    auto bin_results = bin_heap->aboveThreshold(score);
+    finish = std::chrono::high_resolution_clock::now();
+    microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
+
+    std::cout << "\nThe Max-Heap took " << microseconds.count() << "us to find ";
+    std::cout << bin_results.size() << " site with a phishing score greater than or equal to " << score << ".\n";
 }
