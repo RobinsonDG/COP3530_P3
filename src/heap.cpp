@@ -42,6 +42,7 @@ Heap::Triplet Heap::popTop(){
     size--;
     heapifyDown(0);
 
+    return saveTop;
 
 }
 
@@ -52,10 +53,10 @@ void Heap::heapifyDown(int node) {
 
     int swap = node;
 
-    if(node*2+1 <= size && (container[node*2+1] > container[node]) == 1){
+    if(node*2+1 < size && (container[node*2+1] > container[node]) == 1){
         swap = node*2+1;
     }
-    if((node*2)+2 <= size && (container[node*2+2] > container[node]) == 1){
+    if((node*2)+2 < size && (container[node*2+2] > container[node]) == 1){
         swap = node*2 + 2;
     }
 
