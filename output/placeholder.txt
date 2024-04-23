@@ -1,0 +1,1 @@
+The purpose of this file is to maintain the existence of the output folder on Github.
